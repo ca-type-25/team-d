@@ -26,7 +26,34 @@ const getActivityId = async (req, res) => {
       res.status(500).send(error)
     }
 }
-  
+ 
+const getActivitiesByDestination = async (req, res) => {
+    try {
+        const {destinationId} = req.params
+        const activities = await Activity.find({ destinationIds: destinationId }).populate('destinationIds')
+        res.send(activities)
+    } catch (error) {
+        res.status(500).send(error)
+    }
+    };
+
+const getActivitiesByPrice = async (req, res) => {
+  try {
+    const { price } = req.query;
+    const parsedPrice = Number(price);
+
+    if (isNaN(parsedPrice)) {
+      return res.status(400).send({ message: "Invalid price format" });
+    }
+
+    const activities = await Activity.find({ price: { $lte: parsedPrice } }).populate('destinationIds');
+    res.send(activities);
+  } catch (error) {
+    console.error(error); 
+    res.status(500).send(error);
+  }
+};
+
 const createActivity = async (req, res) => {
 try {
     const activity = new Activity(req.body)
@@ -78,6 +105,8 @@ try {
 module.exports = {
     getActivities,
     getActivityId,
+    getActivitiesByDestination,
+    getActivitiesByPrice,
     createActivity,
     updateActivity,
     removeActivity
