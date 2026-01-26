@@ -1,8 +1,9 @@
 const express = require('express')
-const { getActivities, getActivityId, createActivity, removeActivity, updateActivity } = require('../controllers/activityController')
+const { getActivities, getActivityId, createActivity, removeActivity, updateActivity, getActivitiesByPrice } = require('../controllers/activityController')
 
 const router = express.Router()
 
+router.get('/filter/price', getActivitiesByPrice);
 router.get('/', getActivities)
 router.get('/:id', getActivityId)
 router.post('/', createActivity)
