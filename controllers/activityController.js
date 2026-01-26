@@ -3,11 +3,18 @@ const Activity = require('../models/activityModel')
 
 const getActivities = async (req, res) => {
     try {
-        const activities = await Activity.find().populate('destinationIds')
+        const { price } = req.query;
+        let query = {};
+
+        if (price) {
+        query.price = { $lte: Number(price) };
+        }
+
+        const activities = await Activity.find(query).populate('destinationIds')
         res.send(activities)
 
     } catch (error) {
-        res.status(500).send(error)
+        res.status(500).send({ message: "Error fetching activities", error });
     }
 }
 
